@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Milestone Control — Add Financing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef0ea; --ink:#12140f; --dim:#6b7064; --line:#dfe2d8;
+    --lime:#d4f23a; --card:#ffffff; --dark:#0d0f0b;
+    --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --font-ar:"Cairo",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;}
+  .top{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:var(--dark);color:#fff;}
+  .brand{display:flex;align-items:center;gap:14px;font-weight:800;font-size:18px;}
+  .brand .sub{font-weight:500;color:#8c948a;font-size:11px;letter-spacing:0.14em;border-left:1px solid rgba(255,255,255,0.18);padding-left:14px;text-transform:uppercase;}
+  .top-right{display:flex;align-items:center;gap:12px;}
+  .live-pill{display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.18);font-size:11px;font-weight:700;letter-spacing:0.1em;}
+  .live-pill .d{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px var(--lime);}
+  .view-btn{display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:var(--lime);color:#0d0f0b;font-weight:800;font-size:13px;text-decoration:none;}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:clamp(28px,5vh,64px) 32px;display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(32px,5vw,80px);align-items:start;}
+  @media(max-width:900px){.wrap{grid-template-columns:1fr;}}
+
+  .tag{display:inline-block;padding:8px 18px;border:1px solid var(--line);border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--dim);background:#fff;margin-bottom:28px;}
+  .hero{font-size:clamp(46px,6vw,86px);font-weight:800;line-height:0.98;letter-spacing:-0.03em;}
+  .hero-sub{color:var(--dim);font-size:clamp(14px,1.3vw,18px);font-weight:500;margin-top:24px;max-width:34ch;line-height:1.5;}
+  .current{margin-top:36px;background:var(--dark);color:#fff;border-radius:20px;padding:26px 30px;max-width:420px;}
+  .current .lbl{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#8c948a;margin-bottom:10px;}
+  .current .val{display:flex;align-items:baseline;gap:12px;font-size:clamp(28px,3.4vw,44px);font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;}
+  .current .val .cur{color:var(--lime);font-size:0.5em;font-weight:800;}
+  .current .mini{margin-top:14px;height:6px;border-radius:999px;background:rgba(255,255,255,0.12);overflow:hidden;}
+  .current .mini span{display:block;height:100%;width:0%;background:var(--lime);border-radius:999px;transition:width 1s ease;}
+  .current .meta{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:#8c948a;font-weight:600;font-variant-numeric:tabular-nums;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:clamp(26px,3vw,40px);box-shadow:0 30px 60px -30px rgba(0,0,0,0.25);}
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:26px;}
+  .card-head .step{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--dim);}
+  .card-head h2{font-size:clamp(24px,2.4vw,34px);font-weight:800;letter-spacing:-0.01em;margin-top:6px;}
+  .cast{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#4a7a1e;background:rgba(143,174,42,0.14);padding:7px 14px;border-radius:999px;}
+
+  label.fld{display:block;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;}
+  .amount-box{display:flex;align-items:center;border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+  .amount-box .cur{padding:0 20px;font-weight:800;color:var(--dim);background:#f5f6f1;align-self:stretch;display:flex;align-items:center;font-size:14px;letter-spacing:0.05em;}
+  .amount-box input{flex:1;border:none;outline:none;padding:22px 20px;font-size:clamp(28px,3vw,40px);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.01em;color:var(--ink);background:#fff;width:100%;}
+  .quick{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .quick button{flex:1;min-width:90px;padding:14px 10px;border:1px solid var(--line);border-radius:12px;background:#fff;font-weight:700;font-size:14px;cursor:pointer;color:var(--ink);transition:all 0.15s;}
+  .quick button:hover{border-color:#bcc2b2;}
+  .quick button.sel{background:var(--dark);color:#fff;border-color:var(--dark);}
+
+  .projected{display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding:16px 20px;border-radius:14px;background:#f5f6f1;font-size:13px;}
+  .projected .lbl{font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:8px;}
+  .projected .num{font-weight:900;font-size:17px;font-variant-numeric:tabular-nums;}
+  .projected .pct{color:#4a7a1e;font-weight:700;margin-left:8px;font-size:12px;}
+
+  .add-btn{width:100%;margin-top:24px;padding:22px;border:none;border-radius:16px;background:var(--lime);color:#0d0f0b;font-size:17px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:filter 0.15s;}
+  .add-btn:hover{filter:brightness(1.05);}
+  .add-btn:disabled{opacity:0.5;cursor:default;}
+  .hint{text-align:center;color:var(--dim);font-size:12px;margin-top:14px;}
+  .msg{text-align:center;font-size:13px;font-weight:600;margin-top:14px;min-height:18px;}
+  .msg.ok{color:#2f7a1e;} .msg.err{color:#c2342b;}
+
+  .divider{border:none;border-top:1px solid var(--line);margin:28px 0;}
+  .correct-row{display:flex;gap:12px;align-items:center;}
+  .correct-row .lbl{font-size:12px;color:var(--dim);font-weight:600;display:flex;align-items:center;gap:8px;flex:1;}
+  .correct-input{flex:1;display:flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  .correct-input .cur{padding:0 12px;color:var(--dim);font-size:12px;font-weight:700;}
+  .correct-input input{border:none;outline:none;padding:12px;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;width:100%;}
+  .set-btn{padding:12px 18px;border:none;border-radius:12px;background:#9aa08f;color:#fff;font-weight:700;font-size:13px;cursor:pointer;}
+  .set-btn:hover{background:#848a78;}
+
+  .activity{margin-top:28px;}
+  .activity h3{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+  .act-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px;}
+  .act-row .what{color:var(--lime);filter:brightness(0.7);font-weight:600;}
+  .act-row .amt{font-weight:700;font-variant-numeric:tabular-nums;}
+  .act-row .amt.minus{color:#c2342b;}
+  .act-row .time{color:var(--dim);font-size:11px;margin-left:14px;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div></div>
+  <div class="top-right">
+    <div class="live-pill"><span class="d"></span>LIVE</div>
+    <a class="view-btn" href="display.html" target="_blank">View live display ↗</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div>
+    <span class="tag">Milestone Control</span>
+    <div class="hero">Every riyal<br>moves the<br>story forward.</div>
+    <div class="hero-sub">Add the latest financed amount and the live display updates instantly.</div>
+
+    <div class="current">
+      <div class="lbl">Current Total</div>
+      <div class="val"><span class="cur">SAR</span><span id="cur-total">0</span></div>
+      <div class="mini"><span id="cur-bar"></span></div>
+      <div class="meta"><span id="cur-pct">0% complete</span><span id="cur-togo">— remaining</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div><div class="step">01 / Update</div><h2>Add financing</h2></div>
+      <div class="cast">◉ Broadcasting live</div>
+    </div>
+
+    <label class="fld">Amount to add</label>
+    <div class="amount-box">
+      <span class="cur">SAR</span>
+      <input id="add-input" inputmode="numeric" value="1,000,000">
+    </div>
+    <div class="quick" id="quick"></div>
+
+    <div class="projected">
+      <span class="lbl">↗ New projected total</span>
+      <span><span class="num" id="proj">—</span><span class="pct" id="proj-pct"></span></span>
+    </div>
+
+    <button class="add-btn" id="add-btn">Add to total →</button>
+    <div class="hint">Press Enter to publish · the live display updates on its next refresh.</div>
+    <div class="msg" id="msg"></div>
+
+    <hr class="divider">
+
+    <div class="correct-row">
+      <span class="lbl">↺ Need to correct the total?</span>
+      <div class="correct-input"><span class="cur">SAR</span><input id="set-input" inputmode="numeric" placeholder="exact total"></div>
+      <button class="set-btn" id="set-btn">Set exact total</button>
+    </div>
+
+    <div class="activity">
+      <h3>◷ Recent activity</h3>
+      <div id="activity-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= CONFIG =================
+   To WRITE to the sheet from this page you need a Google Apps Script
+   web app URL (see setup notes). Paste it into WRITE_URL below.
+   Until then, the page still computes totals and lets you copy them.
+*/
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXfxJp-bPlcetEh63C-5lMvUpXvWVvqbcMhOtlh1A9VwVTHIOMmhtyfzMDy6c-xFSTLWJjKQvlM2Th/pub?output=csv";
+const SHEET_ID  = "1avRDZt7ez6fd5QCakTy-N_ivWlx0AyFtIkQTvh6r0vA";
+const WRITE_URL = "https://script.google.com/macros/s/AKfycbxRf9YaIpdnKeJnrF1xoYctt3cusO76t0KSg6XGIKkwYflLxPcj0X6dP_allE3f1O52/exec";
+const GOAL = 1000000000;         // SAR 1B
+const QUICK = [100000, 500000, 1000000, 5000000, 10000000];
+const POLL_SECONDS = 15;
+/* ========================================== */
+
+let total = 0;
+const activity = [];
+
+function groupInt(n){ return Math.round(n).toLocaleString("en-US"); }
+function parseNum(s){ return parseFloat(String(s).replace(/[^0-9.]/g,""))||0; }
+function fmtM(v){ if(v>=1e9)return (Math.round(v/1e8)/10)+"B"; if(v>=1e6)return (Math.round(v/1e5)/10)+"M"; return groupInt(v); }
+
+// quick buttons
+(function(){ const q=document.getElementById("quick"); QUICK.forEach((v,i)=>{ const b=document.createElement("button"); b.textContent="+ "+fmtM(v); b.dataset.v=v; if(v===1000000)b.classList.add("sel"); b.onclick=()=>{ document.getElementById("add-input").value=groupInt(v); markSel(v); updateProj(); }; q.appendChild(b);} );})();
+function markSel(v){ document.querySelectorAll("#quick button").forEach(b=>b.classList.toggle("sel", +b.dataset.v===+v)); }
+
+const addInput=document.getElementById("add-input");
+addInput.addEventListener("input",()=>{ markSel(parseNum(addInput.value)); updateProj(); });
+addInput.addEventListener("keydown",e=>{ if(e.key==="Enter") doAdd(); });
+
+function updateProj(){
+  const add=parseNum(addInput.value);
+  const proj=total+add;
+  document.getElementById("proj").textContent="SAR "+groupInt(proj);
+  document.getElementById("proj-pct").textContent=(proj/GOAL*100).toFixed(2)+"% of goal";
+}
+
+function renderCurrent(){
+  document.getElementById("cur-total").textContent=groupInt(total);
+  const pct=Math.min(total/GOAL*100,100);
+  document.getElementById("cur-bar").style.width=pct+"%";
+  document.getElementById("cur-pct").textContent=pct.toFixed(2)+"% complete";
+  document.getElementById("cur-togo").textContent=fmtM(Math.max(GOAL-total,0))+" remaining";
+  updateProj();
+}
+
+function logActivity(what, amount, minus){
+  activity.unshift({what, amount, minus, time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});
+  const list=document.getElementById("activity-list");
+  list.innerHTML=activity.slice(0,6).map(a=>
+    '<div class="act-row"><span class="what">'+a.what+'</span><span><span class="amt'+(a.minus?' minus':'')+'">'+(a.minus?'− ':'+ ')+'SAR '+groupInt(a.amount)+'</span><span class="time">'+a.time+'</span></span></div>'
+  ).join("");
+}
+
+async function writeTotal(newTotal){
+  if(!WRITE_URL){
+    // no write endpoint — copy to clipboard as fallback
+    try{ await navigator.clipboard.writeText(String(Math.round(newTotal))); showMsg("ok","Copied "+groupInt(newTotal)+" — paste into the sheet's 'actual' cell."); }
+    catch(e){ showMsg("err","Set WRITE_URL to publish automatically (see notes). New total: "+groupInt(newTotal)); }
+    return true; // treat as success locally
+  }
+  try{
+    showMsg("","Publishing…");
+    await fetch(WRITE_URL, { method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain"}, body:JSON.stringify({actual:Math.round(newTotal)}) });
+    showMsg("ok","Published ✓ live display updates shortly.");
+    return true;
+  }catch(e){ showMsg("err","Publish failed — check the Apps Script URL."); return false; }
+}
+
+async function doAdd(){
+  const add=parseNum(addInput.value);
+  if(add<=0){ showMsg("err","Enter an amount to add."); return; }
+  const btn=document.getElementById("add-btn"); btn.disabled=true;
+  const newTotal=total+add;
+  const ok=await writeTotal(newTotal);
+  if(ok){ total=newTotal; renderCurrent(); logActivity("Financing added", add, false); }
+  btn.disabled=false;
+}
+document.getElementById("add-btn").onclick=doAdd;
+
+document.getElementById("set-btn").onclick=async()=>{
+  const v=parseNum(document.getElementById("set-input").value);
+  if(v<=0){ showMsg("err","Enter the exact total."); return; }
+  const diff=v-total;
+  const ok=await writeTotal(v);
+  if(ok){ logActivity("Total corrected", Math.abs(diff), diff<0); total=v; renderCurrent(); document.getElementById("set-input").value=""; }
+};
+
+function showMsg(type,text){ const m=document.getElementById("msg"); m.className="msg "+type; m.textContent=text; }
+
+/* ---- read current total from sheet on load + poll ---- */
+function resolveUrl(u){ if(!u)return""; if(u.includes("output=csv")||u.includes("tqx=out:csv"))return u; const m=u.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/); if(m)return "https://docs.google.com/spreadsheets/d/"+m[1]+"/gviz/tq?tqx=out:csv"; return u; }
+const RURL=resolveUrl(SHEET_URL);
+function parseLine(l){ const o=[];let c="",q=false; for(const ch of l){ if(ch==='"')q=!q; else if(ch===","&&!q){o.push(c);c="";} else c+=ch; } o.push(c); return o.map(x=>x.trim()); }
+async function pullTotal(){
+  try{
+    const r=await fetch(RURL+(RURL.includes("?")?"&":"?")+"cb="+Date.now());
+    if(!r.ok) return; const t=await r.text(); if(t.trim().startsWith("<")) return;
+    const lines=t.trim().split(/\r?\n/); if(lines.length<2) return;
+    const H=parseLine(lines[0]).map(h=>h.toLowerCase()), V=parseLine(lines[1]); const row={}; H.forEach((h,i)=>row[h]=V[i]);
+    if("actual" in row){ const a=parseNum(row.actual); if(!isNaN(a)){ total=a; document.getElementById("set-input").placeholder=groupInt(a); renderCurrent(); } }
+  }catch(e){}
+}
+pullTotal();
+setInterval(pullTotal, POLL_SECONDS*1000);
+renderCurrent();
+</script>
+</body>
+</html>
